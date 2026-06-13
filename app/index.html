@@ -77,43 +77,36 @@
           <div>
             <div class="brand-name">MikroText</div>
           </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button mobile-room-button" id="room-selector-btn" title="Rooms" aria-label="Rooms" aria-expanded="false" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-bars"></use></svg>
+          </button>
+          <button class="primary-action" id="create-room-btn" title="New room" aria-label="New room">
+            <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            <span>New room</span>
+          </button>
+          <button class="icon-button mobile-room-action" id="top-copy-invite-btn" title="Copy invite" aria-label="Copy invite" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-link"></use></svg>
+          </button>
+          <button class="icon-button mobile-room-action" id="top-safety-code-btn" title="Safety code" aria-label="Safety code" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
+          </button>
+          <button class="icon-button danger mobile-room-action" id="top-burn-room-btn" title="Burn room" aria-label="Burn room" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-fire"></use></svg>
+          </button>
           <button class="icon-button mobile-theme-button" id="mobile-theme-toggle" title="Toggle theme" aria-label="Toggle theme">
             <svg class="icon icon-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
             <svg class="icon icon-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
           </button>
-          <button class="icon-button mobile-menu-close" id="mobile-menu-close" title="Close" aria-label="Close">
-            <svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg>
-          </button>
         </div>
-
-        <button class="primary-action" id="create-room-btn">
-          <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>
-          <span>New room</span>
-        </button>
 
         <div class="rooms-list" id="rooms-list" aria-live="polite"></div>
-
-        <div class="mobile-menu-actions" aria-label="Room actions">
-          <button class="menu-action" id="mobile-copy-invite-btn" disabled>
-            <svg class="icon" aria-hidden="true"><use href="#icon-link"></use></svg>
-            <span>Copy invite</span>
-          </button>
-          <button class="menu-action" id="mobile-safety-code-btn" disabled>
-            <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
-            <span>Safety code</span>
-          </button>
-          <button class="menu-action danger" id="mobile-burn-room-btn" disabled>
-            <svg class="icon" aria-hidden="true"><use href="#icon-fire"></use></svg>
-            <span>Burn room</span>
-          </button>
-        </div>
       </aside>
 
       <main class="main-content">
         <header class="room-header">
-          <button class="icon-button mobile-menu-toggle" id="mobile-menu-toggle" title="Menu" aria-label="Menu">
-            <svg class="icon" aria-hidden="true"><use href="#icon-bars"></use></svg>
-          </button>
           <div class="room-heading">
             <div class="room-title" id="room-title">MikroText</div>
             <div class="room-subtitle" id="room-subtitle"></div>
@@ -137,10 +130,6 @@
 
         <section class="empty-state" id="empty-state">
           <h1>No room</h1>
-          <button class="primary-action empty-create-room" id="empty-create-room-btn">
-            <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>
-            <span>New room</span>
-          </button>
         </section>
 
         <section class="join-panel" id="join-panel" hidden>
@@ -180,6 +169,19 @@
         </section>
       </main>
     </div>
+
+    <section class="room-selector" id="room-selector" aria-label="Rooms" hidden>
+      <div class="room-selector-header">
+        <div>
+          <div class="room-selector-title">Rooms</div>
+          <div class="room-selector-subtitle">Select a room</div>
+        </div>
+        <button class="icon-button" id="room-selector-close-btn" title="Close" aria-label="Close">
+          <svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="room-selector-list" id="room-selector-list" aria-live="polite"></div>
+    </section>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

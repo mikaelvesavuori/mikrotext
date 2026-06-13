@@ -178,6 +178,19 @@ textarea:focus-visible {
   line-height: 1.2;
 }
 
+.top-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.icon-button.mobile-room-button,
+.icon-button.mobile-room-action,
+.icon-button.mobile-theme-button {
+  display: none;
+}
+
 .room-subtitle {
   color: var(--color-text-muted);
   font-size: 0.78rem;
@@ -245,34 +258,6 @@ textarea:focus-visible {
 .icon-button.danger:hover {
   background: var(--color-danger-soft);
   border-color: var(--color-danger);
-}
-
-.mobile-menu-toggle,
-.mobile-menu-close,
-.mobile-theme-button,
-.mobile-menu-actions {
-  display: none;
-}
-
-.menu-action {
-  min-height: 2.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-s);
-  justify-content: flex-start;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-muted);
-  color: var(--color-text);
-  padding: 0 var(--space-m);
-}
-
-.menu-action.danger {
-  color: var(--color-danger);
-}
-
-.menu-action:disabled {
-  opacity: 0.45;
 }
 
 .rooms-list {
@@ -386,20 +371,13 @@ body.light-mode .icon-sun {
 body.is-empty #copy-invite-btn,
 body.is-empty #safety-code-btn,
 body.is-empty #burn-room-btn,
+body.is-empty #room-selector-btn,
+body.is-empty .mobile-room-action,
 body.is-joining #copy-invite-btn,
 body.is-joining #safety-code-btn,
 body.is-joining #burn-room-btn,
-body.is-empty #mobile-copy-invite-btn,
-body.is-empty #mobile-safety-code-btn,
-body.is-empty #mobile-burn-room-btn,
-body.is-joining #mobile-copy-invite-btn,
-body.is-joining #mobile-safety-code-btn,
-body.is-joining #mobile-burn-room-btn {
-  display: none;
-}
-
-body.is-empty .mobile-menu-actions,
-body.is-joining .mobile-menu-actions {
+body.is-joining #room-selector-btn,
+body.is-joining .mobile-room-action {
   display: none;
 }
 
@@ -423,13 +401,6 @@ body.is-empty .room-heading {
   font-size: 1.35rem;
   font-weight: 600;
   line-height: 1.25;
-}
-
-.empty-create-room {
-  display: none;
-  width: auto;
-  min-width: 10.5rem;
-  box-shadow: none;
 }
 
 .join-panel {
@@ -661,69 +632,53 @@ textarea {
   border-color: var(--color-danger);
 }
 
+.room-selector {
+  display: none;
+}
+
 @media (max-width: 760px) {
-  body.mobile-menu-open {
+  body.room-selector-open {
     overflow: hidden;
   }
 
   .app-container {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: min(100%, 28rem);
+    height: 100vh;
+    height: 100dvh;
     padding: var(--space-s);
+    gap: var(--space-s);
   }
 
   .sidebar {
     width: 100%;
     min-width: 0;
-    position: fixed;
-    inset: 0;
-    height: 100vh;
-    height: 100dvh;
+    position: static;
+    inset: auto;
+    height: auto;
     max-height: none;
     border: 0;
-    gap: var(--space-m);
-    padding: var(--space-l);
-    background: var(--color-bg);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-0.5rem);
-    transition: opacity var(--transition), transform var(--transition);
-    z-index: 20;
-  }
-
-  body.mobile-menu-open .sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions";
+    align-items: center;
+    gap: var(--space-s);
+    padding: 0;
+    background: transparent;
     opacity: 1;
     pointer-events: auto;
     transform: none;
+    z-index: 2;
   }
 
   .brand-row {
+    grid-area: brand;
     min-height: 2.25rem;
     gap: var(--space-s);
-    padding: 0 var(--space-xs);
-  }
-
-  .mobile-theme-button,
-  .mobile-menu-close {
-    display: inline-grid;
-  }
-
-  .mobile-theme-button {
-    margin-left: auto;
-  }
-
-  .mobile-menu-close {
-    margin-left: 0;
-  }
-
-  .mobile-menu-toggle {
-    display: inline-grid;
-  }
-
-  .mobile-menu-actions {
-    display: grid;
-    gap: var(--space-s);
-    padding-top: var(--space-s);
+    min-width: 0;
+    padding: 0;
   }
 
   .brand-mark {
@@ -735,26 +690,66 @@ textarea {
     font-size: 0.95rem;
   }
 
+  body.has-room .sidebar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions";
+    align-items: center;
+  }
+
+  .top-actions {
+    grid-area: actions;
+    width: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    justify-self: end;
+  }
+
+  body.has-room .top-actions {
+    width: auto;
+  }
+
+  body.has-room .brand-row {
+    min-width: 0;
+  }
+
+  .icon-button.mobile-room-button,
+  .icon-button.mobile-room-action,
+  .icon-button.mobile-theme-button {
+    display: inline-grid;
+  }
+
+  .top-actions .icon-button {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
   .primary-action {
     min-height: 2.2rem;
-    width: 100%;
+    width: 2.2rem;
+    height: 2.2rem;
     min-width: 0;
-    align-self: stretch;
-    font-size: 0.95rem;
+    align-self: center;
+    justify-self: end;
+    padding: 0;
     box-shadow: none;
   }
 
+  .primary-action span {
+    display: none;
+  }
+
   .rooms-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-    overflow: auto;
-    padding: 0;
+    display: none;
   }
 
   .room-row {
-    width: 100%;
+    width: auto;
+    flex: 0 0 auto;
     min-width: 0;
+    max-width: 9.5rem;
     min-height: 2.75rem;
     padding: 0.45rem 0.55rem;
   }
@@ -768,18 +763,22 @@ textarea {
   }
 
   .main-content {
-    height: calc(100vh - (var(--space-s) * 2));
-    height: calc(100dvh - (var(--space-s) * 2));
+    flex: 1;
+    height: auto;
     min-height: 0;
     margin-left: 0;
   }
 
   .room-header {
-    display: grid;
-    grid-template-columns: 2.1rem minmax(0, 1fr);
+    display: flex;
     min-height: 2.75rem;
-    padding: var(--space-xs) 0 var(--space-s);
+    padding: var(--space-s) 0 var(--space-s);
     gap: var(--space-s);
+  }
+
+  .room-heading {
+    flex: 1;
+    min-width: 0;
   }
 
   .room-title {
@@ -794,23 +793,69 @@ textarea {
     display: none;
   }
 
-  body.is-empty .room-heading {
-    visibility: visible;
+  #theme-toggle {
+    display: none;
+  }
+
+  body.is-empty .room-header {
+    display: none;
   }
 
   .empty-state {
     padding: var(--space-l) var(--space-m);
   }
 
-  .empty-create-room {
-    display: inline-flex;
-    width: min(100%, 13.5rem);
-    align-self: center;
-  }
-
   .icon-button {
     width: 2.1rem;
     height: 2.1rem;
+  }
+
+  .room-selector:not([hidden]) {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: calc(var(--space-l) + env(safe-area-inset-top)) var(--space-l)
+      calc(var(--space-l) + env(safe-area-inset-bottom));
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .room-selector-header {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-l);
+  }
+
+  .room-selector-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .room-selector-subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+  }
+
+  .room-selector-list {
+    min-height: 0;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-s);
+    overflow: auto;
+  }
+
+  .room-selector-list .room-row {
+    width: 100%;
+    max-width: none;
+    min-height: 3.5rem;
+    padding: 0.65rem 0.75rem;
   }
 
   .room-meta {
@@ -855,5 +900,19 @@ textarea {
   .send-button {
     width: 2.5rem;
     height: 2.5rem;
+  }
+}
+
+@media (max-width: 370px) {
+  body.has-room .sidebar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "brand"
+      "actions";
+    align-items: stretch;
+  }
+
+  body.has-room .top-actions {
+    width: 100%;
   }
 }

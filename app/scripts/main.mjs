@@ -18,17 +18,20 @@ import { getStoredTheme, loadStoredRooms, saveStoredRooms, setStoredTheme } from
 
 const dom = {
   body: document.body,
+  roomSelectorBtn: document.getElementById("room-selector-btn"),
   createRoomBtn: document.getElementById("create-room-btn"),
-  emptyCreateRoomBtn: document.getElementById("empty-create-room-btn"),
+  topCopyInviteBtn: document.getElementById("top-copy-invite-btn"),
+  topSafetyCodeBtn: document.getElementById("top-safety-code-btn"),
+  topBurnRoomBtn: document.getElementById("top-burn-room-btn"),
   roomsList: document.getElementById("rooms-list"),
+  roomSelector: document.getElementById("room-selector"),
+  roomSelectorCloseBtn: document.getElementById("room-selector-close-btn"),
+  roomSelectorList: document.getElementById("room-selector-list"),
   roomTitle: document.getElementById("room-title"),
   roomSubtitle: document.getElementById("room-subtitle"),
   copyInviteBtn: document.getElementById("copy-invite-btn"),
-  mobileCopyInviteBtn: document.getElementById("mobile-copy-invite-btn"),
   safetyCodeBtn: document.getElementById("safety-code-btn"),
-  mobileSafetyCodeBtn: document.getElementById("mobile-safety-code-btn"),
   burnRoomBtn: document.getElementById("burn-room-btn"),
-  mobileBurnRoomBtn: document.getElementById("mobile-burn-room-btn"),
   emptyState: document.getElementById("empty-state"),
   joinPanel: document.getElementById("join-panel"),
   chatPanel: document.getElementById("chat-panel"),
@@ -43,8 +46,6 @@ const dom = {
   sendMessageBtn: document.getElementById("send-message-btn"),
   themeToggle: document.getElementById("theme-toggle"),
   mobileThemeToggle: document.getElementById("mobile-theme-toggle"),
-  mobileMenuToggle: document.getElementById("mobile-menu-toggle"),
-  mobileMenuClose: document.getElementById("mobile-menu-close"),
   toast: document.getElementById("toast")
 };
 
@@ -73,22 +74,21 @@ async function initialize() {
 }
 
 function bindEvents() {
+  dom.roomSelectorBtn.addEventListener("click", openRoomSelector);
+  dom.roomSelectorCloseBtn.addEventListener("click", closeRoomSelector);
   dom.createRoomBtn.addEventListener("click", createRoom);
-  dom.emptyCreateRoomBtn.addEventListener("click", createRoom);
   dom.copyInviteBtn.addEventListener("click", copyInvite);
-  dom.mobileCopyInviteBtn.addEventListener("click", copyInvite);
+  dom.topCopyInviteBtn.addEventListener("click", copyInvite);
   dom.safetyCodeBtn.addEventListener("click", copySafetyDetails);
-  dom.mobileSafetyCodeBtn.addEventListener("click", copySafetyDetails);
+  dom.topSafetyCodeBtn.addEventListener("click", copySafetyDetails);
   dom.burnRoomBtn.addEventListener("click", burnCurrentRoom);
-  dom.mobileBurnRoomBtn.addEventListener("click", burnCurrentRoom);
+  dom.topBurnRoomBtn.addEventListener("click", burnCurrentRoom);
   dom.regenerateNameBtn.addEventListener("click", () => {
     dom.joinName.value = randomName();
   });
   dom.joinRoomBtn.addEventListener("click", joinPendingRoom);
   dom.themeToggle.addEventListener("click", toggleTheme);
   dom.mobileThemeToggle.addEventListener("click", toggleTheme);
-  dom.mobileMenuToggle.addEventListener("click", openMobileMenu);
-  dom.mobileMenuClose.addEventListener("click", closeMobileMenu);
   dom.composerForm.addEventListener("submit", sendMessage);
   dom.messageInput.addEventListener("input", resizeComposer);
   dom.messageInput.addEventListener("keydown", (event) => {
@@ -96,6 +96,9 @@ function bindEvents() {
       event.preventDefault();
       dom.composerForm.requestSubmit();
     }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeRoomSelector();
   });
 }
 
@@ -158,7 +161,6 @@ async function createRoom() {
     state.rooms.set(room.roomId, room);
     saveStoredRooms(state.rooms);
     selectRoom(room.roomId);
-    closeMobileMenu();
   } catch (error) {
     showToast(error.message, "error");
   } finally {
@@ -214,7 +216,7 @@ async function copyInvite() {
   const room = getCurrentRoom();
   if (!room) return;
 
-  setActionBusy([dom.copyInviteBtn, dom.mobileCopyInviteBtn], true);
+  setActionBusy([dom.copyInviteBtn, dom.topCopyInviteBtn], true);
 
   try {
     const inviteToken = generateToken();
@@ -231,11 +233,10 @@ async function copyInvite() {
 
     await copyText(url.toString());
     showToast("Invite copied");
-    closeMobileMenu();
   } catch (error) {
     showToast(error.message, "error");
   } finally {
-    setActionBusy([dom.copyInviteBtn, dom.mobileCopyInviteBtn], false);
+    setActionBusy([dom.copyInviteBtn, dom.topCopyInviteBtn], false);
   }
 }
 
@@ -254,7 +255,6 @@ async function burnCurrentRoom() {
   }
 
   removeRoom(room.roomId);
-  closeMobileMenu();
   showToast("Room burned");
 }
 
@@ -294,7 +294,7 @@ async function sendMessage(event) {
 
 function selectRoom(roomId) {
   state.currentRoomId = roomId;
-  closeMobileMenu();
+  closeRoomSelector();
   render();
   syncRoom(getCurrentRoom(), false);
   restartPolling();
@@ -393,6 +393,7 @@ function render() {
 
 function renderEmpty() {
   state.currentRoomId = null;
+  closeRoomSelector();
   renderRoomList();
   setScreenMode("empty");
   dom.emptyState.hidden = false;
@@ -405,6 +406,7 @@ function renderEmpty() {
 
 function renderJoin() {
   stopPolling();
+  closeRoomSelector();
   renderRoomList();
   setScreenMode("join");
   dom.emptyState.hidden = true;
@@ -418,25 +420,33 @@ function renderJoin() {
 
 function renderRoomList() {
   dom.roomsList.replaceChildren();
+  dom.roomSelectorList.replaceChildren();
 
   for (const room of state.rooms.values()) {
-    const row = document.createElement("button");
-    row.className = room.roomId === state.currentRoomId ? "room-row active" : "room-row";
-    row.addEventListener("click", () => selectRoom(room.roomId));
-
-    const text = document.createElement("div");
-    const title = document.createElement("div");
-    title.className = "room-row-title";
-    title.textContent = room.participantName;
-
-    const meta = document.createElement("div");
-    meta.className = "room-row-meta";
-    meta.textContent = formatRemaining(room.expiresAt);
-
-    text.append(title, meta);
-    row.append(text);
-    dom.roomsList.append(row);
+    dom.roomsList.append(createRoomRow(room));
+    dom.roomSelectorList.append(createRoomRow(room, { showParticipants: true }));
   }
+}
+
+function createRoomRow(room, options = {}) {
+  const row = document.createElement("button");
+  row.className = room.roomId === state.currentRoomId ? "room-row active" : "room-row";
+  row.addEventListener("click", () => selectRoom(room.roomId));
+
+  const text = document.createElement("div");
+  const title = document.createElement("div");
+  title.className = "room-row-title";
+  title.textContent = room.participantName;
+
+  const meta = document.createElement("div");
+  meta.className = "room-row-meta";
+  meta.textContent = options.showParticipants
+    ? `${formatRemaining(room.expiresAt)} · ${formatParticipants(room.participants?.length || 1)}`
+    : formatRemaining(room.expiresAt);
+
+  text.append(title, meta);
+  row.append(text);
+  return row;
 }
 
 function renderMessages(room) {
@@ -509,7 +519,6 @@ async function copySafetyDetails() {
 
   await copyText(details);
   showToast("Safety code copied");
-  closeMobileMenu();
 }
 
 function findParticipant(room, participantId) {
@@ -558,12 +567,19 @@ function toggleTheme() {
   setStoredTheme(isLight ? "light" : "dark");
 }
 
-function openMobileMenu() {
-  dom.body.classList.add("mobile-menu-open");
+function openRoomSelector() {
+  if (state.rooms.size === 0) return;
+
+  renderRoomList();
+  dom.roomSelector.hidden = false;
+  dom.roomSelectorBtn.setAttribute("aria-expanded", "true");
+  dom.body.classList.add("room-selector-open");
 }
 
-function closeMobileMenu() {
-  dom.body.classList.remove("mobile-menu-open");
+function closeRoomSelector() {
+  dom.roomSelector.hidden = true;
+  dom.roomSelectorBtn.setAttribute("aria-expanded", "false");
+  dom.body.classList.remove("room-selector-open");
 }
 
 function setScreenMode(mode) {
@@ -588,16 +604,17 @@ function setActionBusy(elements, isBusy) {
 }
 
 function setCreateRoomBusy(isBusy) {
-  setActionBusy([dom.createRoomBtn, dom.emptyCreateRoomBtn], isBusy);
+  setActionBusy([dom.createRoomBtn], isBusy);
 }
 
 function setRoomActionDisabled(isDisabled) {
+  dom.roomSelectorBtn.disabled = isDisabled || state.rooms.size === 0;
   dom.copyInviteBtn.disabled = isDisabled;
-  dom.mobileCopyInviteBtn.disabled = isDisabled;
+  dom.topCopyInviteBtn.disabled = isDisabled;
   dom.safetyCodeBtn.disabled = isDisabled;
-  dom.mobileSafetyCodeBtn.disabled = isDisabled;
+  dom.topSafetyCodeBtn.disabled = isDisabled;
   dom.burnRoomBtn.disabled = isDisabled;
-  dom.mobileBurnRoomBtn.disabled = isDisabled;
+  dom.topBurnRoomBtn.disabled = isDisabled;
 }
 
 function scrollMessagesToEnd() {
