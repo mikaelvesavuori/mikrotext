@@ -67,8 +67,7 @@ const staticFiles = [
   "favicon-32.png",
   "favicon.ico",
   "manifest.webmanifest",
-  "offline.html",
-  "pwa.js"
+  "offline.html"
 ];
 
 for (const fileName of staticFiles) {
