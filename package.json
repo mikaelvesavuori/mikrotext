@@ -1,7 +1,7 @@
 {
   "name": "mikrotext",
   "description": "Short-lived encrypted text rooms with no accounts and no server-readable messages.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Mikael Vesavuori",
   "license": "MIT",
   "keywords": [
