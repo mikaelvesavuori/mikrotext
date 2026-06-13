@@ -1,0 +1,81 @@
+---
+title: Architecture
+description: The MikroText runtime boundaries and relay model.
+---
+
+MikroText is a static browser app paired with an in-memory Node relay.
+
+## Runtime Boundaries
+
+- The browser creates room keys, invite tokens, and participant signing keys.
+- The browser derives per-message keys, encrypts, and signs messages before upload.
+- The relay authenticates participant sessions and stores encrypted envelopes.
+- Other browsers fetch room state, verify signatures, and decrypt locally.
+- Room state disappears on expiry, burn, or API restart.
+
+## Browser App
+
+The app is written in vanilla JavaScript, HTML, and CSS, then bundled with esbuild.
+
+The browser stores active room data in `sessionStorage`:
+
+- room ID
+- room key
+- participant ID and pseudonym
+- session token
+- signing public/private key pair
+- sender chain key and message index
+- participant list
+
+Closing the browser session removes practical access unless an invite URL is still usable.
+
+## Relay API
+
+The API is written in TypeScript with MikroServe. It handles:
+
+- room creation
+- one-time invite creation and consumption
+- participant session authorization
+- ciphertext relay
+- room state polling
+- room burn
+- expiry cleanup
+
+The relay does not decrypt, inspect, index, search, preview, or summarize message content.
+
+## Protocol Shape
+
+Messages use a small envelope:
+
+- server-assigned message ID
+- room ID
+- server-authenticated sender ID
+- AES-GCM nonce
+- message key version
+- sender chain ID and message index
+- encrypted sender chain-key checkpoint
+- ciphertext
+- ECDSA signature
+- creation and expiry timestamps
+
+Version 3 envelopes sign the room ID, sender ID, key version, sender chain metadata, chain-key checkpoint, nonce, and ciphertext.
+
+The sender chain advances after each message. This improves on static room-key encryption, but it is not a full Double Ratchet because the room key still bootstraps checkpoints for reload and polling recovery.
+
+## Source Layout
+
+The server code uses a shallow domain/application/infrastructure split:
+
+- `src/interfaces` defines request, response, and protocol contracts.
+- `src/domain` contains room policy, validation, errors, and envelope rules.
+- `src/application` contains the in-memory relay service.
+- `src/infrastructure` adapts the application service to HTTP.
+- `src/shared` holds small generic helpers.
+
+MikroText keeps this split small while the relay remains in-memory.
+
+## Build Outputs
+
+- `dist/` - static browser app
+- `dist/config.json` - public browser runtime config, including `apiBaseUrl`
+- `lib/mikrotext.mjs` - Node relay bundle

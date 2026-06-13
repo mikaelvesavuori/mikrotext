@@ -1,0 +1,7 @@
+{
+  "apiBaseUrl": "http://127.0.0.1:3000",
+  "debugMode": false,
+  "maxMessageLength": 1000,
+  "pollIntervalMs": 2500,
+  "defaultTtlMs": 3600000
+}

@@ -1,0 +1,35 @@
+{
+  "name": "mikrotext-docs",
+  "type": "module",
+  "version": "1.0.0",
+  "keywords": [
+    "mikrotext",
+    "documentation",
+    "docs",
+    "starlight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaelvesavuori/mikrotext.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mikaelvesavuori/mikrotext/issues"
+  },
+  "homepage": "https://github.com/mikaelvesavuori/mikrotext#readme",
+  "private": true,
+  "description": "The documentation site for MikroText.",
+  "author": "MikroText",
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.39.2",
+    "astro": "6.3.3",
+    "typescript": "6"
+  }
+}

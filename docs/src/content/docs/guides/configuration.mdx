@@ -1,0 +1,68 @@
+---
+title: Configuration
+description: Runtime configuration for MikroText.
+---
+
+MikroText keeps configuration intentionally small. The app reads public runtime settings from `config.json`, and the API reads a few environment variables at startup.
+
+## Browser App
+
+The browser app is built into static files and reads `config.json` at startup:
+
+```json
+{
+  "apiBaseUrl": "http://127.0.0.1:3000",
+  "debugMode": false,
+  "maxMessageLength": 1000,
+  "pollIntervalMs": 2500,
+  "defaultTtlMs": 3600000
+}
+```
+
+Set `apiBaseUrl` to the public relay origin the browser should call. For the hosted MikroSuite deployment, that is `https://text-api.mikrosuite.com`.
+
+When Cloudflare Pages builds the static app, set `CF_PAGES=1` to write the hosted default. Set `MIKROTEXT_PUBLIC_API_BASE_URL` to override it:
+
+```bash
+MIKROTEXT_PUBLIC_API_BASE_URL=https://text-api.mikrosuite.com npm run build:web
+```
+
+The hosted build also adds the API origin to `_headers` so the Content Security Policy allows relay requests.
+
+Browser-side settings include:
+
+- API base URL
+- maximum message length
+- polling interval
+- default room lifetime
+
+## API Environment
+
+The API reads these environment variables:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `HOST` | `127.0.0.1` | Server bind host |
+| `PORT` | `3000` | Server port |
+| `ALLOWED_DOMAINS` | `*` | Comma-separated browser origins allowed to call the API |
+| `DEFAULT_TTL_MS` | app default | Default room lifetime |
+| `MAX_TTL_MS` | app default | Maximum accepted room lifetime |
+
+## Operational Limits
+
+The relay uses conservative limits to keep short-lived rooms predictable:
+
+| Limit | Value |
+| --- | --- |
+| Participants per room | 16 |
+| Invite tokens per room | 64 |
+| Retained messages per room | 1,000 |
+| Messages per room per minute | 120 |
+| Messages per participant per minute | 40 |
+| Maximum ciphertext payload | 32 KB |
+
+## Storage
+
+The relay stores room state in memory. Restarting the API removes active rooms, invite tokens, participant sessions, and relayed ciphertext.
+
+The browser stores room keys, participant session tokens, signing private keys, and sender chain state in `sessionStorage` for the current browser tab session.

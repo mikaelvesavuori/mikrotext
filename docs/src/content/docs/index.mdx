@@ -1,0 +1,44 @@
+---
+title: MikroText
+description: Short-lived encrypted text rooms.
+template: splash
+hero:
+  tagline: Short-lived encrypted text rooms with no accounts, no history, and no server-readable messages.
+  image:
+    light: ../../assets/logo.svg
+    dark: ../../assets/logo.svg
+  actions:
+    - text: Get Started
+      link: /text/docs/getting-started/intro
+      icon: rocket
+    - text: Installation
+      link: /text/docs/getting-started/installation
+      icon: laptop
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <Card title="Getting Started" icon="open-book">
+    Set up MikroText and start a private room.
+
+    <LinkCard title="What is MikroText?" href="/text/docs/getting-started/intro" />
+    <LinkCard title="Installation" href="/text/docs/getting-started/installation" />
+  </Card>
+
+  <Card title="Guides" icon="puzzle">
+    Run and deploy the encrypted relay.
+
+    <LinkCard title="Configuration" href="/text/docs/guides/configuration" />
+    <LinkCard title="Deployment" href="/text/docs/guides/deployment" />
+    <LinkCard title="Security Model" href="/text/docs/guides/security-model" />
+  </Card>
+
+  <Card title="References" icon="document">
+    Protocol behavior and API details.
+
+    <LinkCard title="Architecture" href="/text/docs/reference/architecture" />
+    <LinkCard title="API Reference" href="/text/docs/reference/api" />
+    <LinkCard title="Comparison" href="/text/docs/reference/comparison" />
+  </Card>
+</CardGrid>

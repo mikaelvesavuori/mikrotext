@@ -1,0 +1,56 @@
+---
+title: Security Model
+description: What MikroText protects and where its boundaries are.
+---
+
+MikroText is designed as an encrypted relay. The browser encrypts and signs messages; the server relays ciphertext and removes short-lived room state.
+
+## Protection Summary
+
+Message text is encrypted in the browser before upload. The relay does not receive room keys, participant signing private keys, sender chain keys, or plaintext messages.
+
+Messages are encrypted with AES-GCM and signed with browser-generated ECDSA P-256 signing keys. Other clients verify the signature before decrypting and displaying the message.
+
+Each sender also advances a local message chain after sending. This avoids direct room-key encryption for each message, while still allowing the room key to bootstrap encrypted chain-key checkpoints after polling or reloads.
+
+## What the Relay Stores
+
+- Room IDs and expiry timestamps.
+- Hashed participant session tokens.
+- Participant pseudonyms and public signing keys.
+- Hashed one-time invite tokens.
+- Ciphertext envelopes, encrypted chain-key checkpoints, signatures, creation timestamps, and expiry timestamps.
+
+## What Stays In The Browser
+
+- Room keys.
+- Participant signing private keys.
+- Sender chain keys.
+- Plaintext message text.
+- Participant session tokens.
+
+## Message Authentication
+
+The server assigns the sender ID from the authenticated participant session. Clients sign the room ID, sender ID, key version, sender chain metadata, encrypted chain-key checkpoint, nonce, and ciphertext.
+
+The interface shows sender identity from the authenticated relay envelope and participant list, not from a self-claimed encrypted payload field.
+
+## Safety code
+
+The Safety code fingerprints the room key and the current participant signing keys. Two participants who compare the same code have the same room secret and the same view of participant identity keys.
+
+The code is useful only when users compare it through another channel. It is not automatic identity verification. If the code differs, stop using the room and create a new one.
+
+## Limits
+
+- Web-delivered JavaScript is part of the trust boundary. A compromised app host can serve malicious client code.
+- The room key still bootstraps message-key checkpoints. If the room key is later exposed together with retained ciphertext, old retained messages may be recoverable.
+- The relay still sees metadata such as IPs, timing, room IDs, participant count, and message sizes.
+- Participants can copy messages, screenshot rooms, forward invites, leak keys, or use compromised devices.
+- Public signing keys are distributed by the relay. The Safety code helps users compare key material out of band, but it is not automatic identity verification.
+
+## Higher-Assurance Use
+
+MikroText is not a Signal replacement and does not claim Signal-grade forward secrecy. For high-assurance secure messaging, use a mature messenger with audited clients, verified long-term identities, and a proven ratchet or group messaging protocol.
+
+For higher-assurance MikroText deployments, use HTTPS, strict static hosting, pinned assets or published checksums, external review, and clear operating guidance for users.

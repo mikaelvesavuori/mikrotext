@@ -1,0 +1,90 @@
+---
+title: Installation
+description: Run MikroText locally or from release archives.
+---
+
+MikroText ships as two release archives:
+
+1. **App** - static files for the browser interface.
+2. **API** - a Node.js relay that stores short-lived room state and encrypted envelopes.
+
+## Use Online
+
+Open [text.mikrosuite.com](https://text.mikrosuite.com) to use the hosted MikroText app.
+
+## Requirements
+
+- Node.js 24 or newer for the API.
+- A static file server for the browser app.
+- HTTPS for production deployments.
+
+## Download Release Archives
+
+```bash
+curl -sSL -o mikrotext_app.zip https://releases.mikrosuite.com/mikrotext_app_latest.zip
+curl -sSL -o mikrotext_api.zip https://releases.mikrosuite.com/mikrotext_api_latest.zip
+unzip mikrotext_app.zip -d mikrotext_app
+unzip mikrotext_api.zip -d mikrotext_api
+```
+
+Start the API:
+
+```bash
+cd mikrotext_api/*
+node mikrotext.mjs
+```
+
+Serve the app from another terminal:
+
+```bash
+cd mikrotext_app/*
+npx http-server . -a 127.0.0.1 -p 8000 -c-1
+```
+
+Open `http://127.0.0.1:8000`.
+
+## Run From Source
+
+Install dependencies and start both the app and API:
+
+```bash
+npm install
+npm run dev
+```
+
+The API runs on `http://127.0.0.1:3000`.
+The app runs on `http://127.0.0.1:8000`.
+
+## Build Locally
+
+```bash
+npm run build
+```
+
+The static app is written to `dist/`.
+The API bundle is written to `lib/mikrotext.mjs`.
+
+The static app reads `dist/config.json` to find the API. Local builds use `http://127.0.0.1:3000`. Hosted builds can set `MIKROTEXT_PUBLIC_API_BASE_URL`, or use `CF_PAGES=1` for the MikroSuite default `https://text-api.mikrosuite.com`.
+
+Serve the built app locally:
+
+```bash
+npx http-server dist -a 127.0.0.1 -p 8000 -c-1
+```
+
+Start the built API:
+
+```bash
+node lib/mikrotext.mjs
+```
+
+Open `http://127.0.0.1:8000`.
+
+## Release URLs
+
+Latest release downloads:
+
+- `https://releases.mikrosuite.com/mikrotext_app_latest.zip` - static browser app
+- `https://releases.mikrosuite.com/mikrotext_api_latest.zip` - Node API bundle
+
+GitHub Releases provide versioned archives for pinned deployments.

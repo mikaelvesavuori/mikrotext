@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MikroText">
+  <rect width="512" height="512" rx="112" fill="#111113"/>
+  <g transform="translate(256 256) scale(.9) translate(-256 -256)">
+    <path d="M292 52c16 76-2 132-54 182-10-55-42-96-94-124 10 78-58 132-58 224 0 84 70 140 170 140s170-56 170-140c0-92-64-158-134-282Z" fill="#ff6473"/>
+    <path d="M184 306h144M208 368h92" fill="none" stroke="#111113" stroke-width="36" stroke-linecap="round"/>
+  </g>
+</svg>

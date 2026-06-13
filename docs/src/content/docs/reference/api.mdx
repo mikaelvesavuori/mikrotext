@@ -1,0 +1,147 @@
+---
+title: API Reference
+description: MikroText HTTP relay endpoints.
+---
+
+All API responses are JSON except `/health`.
+
+Authenticated endpoints use `Authorization: Bearer <sessionToken>`.
+
+## `GET /health`
+
+Returns service health.
+
+```text
+OK
+```
+
+## `POST /rooms`
+
+Creates a room and joins the creator.
+
+```json
+{
+  "participantName": "Clear River 60",
+  "ttlMs": 3600000,
+  "signingPublicKey": {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "base64url",
+    "y": "base64url",
+    "ext": true,
+    "key_ops": ["verify"]
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "roomId": "abc",
+  "participantId": "def",
+  "sessionToken": "secret",
+  "expiresAt": "2026-06-13T20:00:00.000Z",
+  "participants": []
+}
+```
+
+## `POST /rooms/:roomId/invites`
+
+Creates a one-time invite.
+
+```json
+{
+  "inviteToken": "secret"
+}
+```
+
+Response:
+
+```json
+{
+  "inviteId": "ghi",
+  "expiresAt": "2026-06-13T20:00:00.000Z"
+}
+```
+
+## `POST /rooms/:roomId/join`
+
+Consumes a one-time invite and joins the room.
+
+```json
+{
+  "participantName": "Green Hill 22",
+  "inviteToken": "secret",
+  "signingPublicKey": {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "base64url",
+    "y": "base64url",
+    "ext": true,
+    "key_ops": ["verify"]
+  }
+}
+```
+
+## `GET /rooms/:roomId/state?after=<messageId>`
+
+Returns room state and messages after an optional message ID.
+
+```json
+{
+  "roomId": "abc",
+  "expiresAt": "2026-06-13T20:00:00.000Z",
+  "participants": [],
+  "messages": []
+}
+```
+
+## `POST /rooms/:roomId/messages`
+
+Adds an encrypted signed message envelope.
+
+```json
+{
+  "keyVersion": 3,
+  "chainId": "base64url",
+  "messageIndex": 0,
+  "chainKeyNonce": "base64url",
+  "chainKeyCiphertext": "base64url",
+  "nonce": "base64url",
+  "ciphertext": "base64url",
+  "signature": "base64url"
+}
+```
+
+Response:
+
+```json
+{
+  "message": {
+    "id": "mno",
+    "roomId": "abc",
+    "senderId": "def",
+    "keyVersion": 3,
+    "chainId": "base64url",
+    "messageIndex": 0,
+    "chainKeyNonce": "base64url",
+    "chainKeyCiphertext": "base64url",
+    "nonce": "base64url",
+    "ciphertext": "base64url",
+    "signature": "base64url",
+    "createdAt": "2026-06-13T19:10:00.000Z",
+    "expiresAt": "2026-06-13T20:00:00.000Z"
+  }
+}
+```
+
+## `POST /rooms/:roomId/burn`
+
+Burns the room immediately.
+
+```json
+{
+  "success": true
+}
+```

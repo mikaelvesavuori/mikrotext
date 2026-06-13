@@ -1,0 +1,16 @@
+node_modules/
+docs/node_modules/
+docs/.astro/
+docs/dist/
+coverage/
+dist/
+lib/
+release/
+security/
+sbom.json
+oss-licenses.txt
+grype-report.json
+grant-report.txt
+*.tgz
+*.zip
+.DS_Store

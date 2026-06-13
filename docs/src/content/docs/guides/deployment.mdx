@@ -1,0 +1,95 @@
+---
+title: Deployment
+description: Deploy the MikroText app and relay.
+---
+
+MikroText deployments have two parts:
+
+1. **App** - static browser files served from an HTTPS origin.
+2. **API relay** - a Node.js process that relays encrypted envelopes and short-lived room state.
+
+## Download Release Archives
+
+```bash
+curl -sSL -o mikrotext_app.zip https://releases.mikrosuite.com/mikrotext_app_latest.zip
+curl -sSL -o mikrotext_api.zip https://releases.mikrosuite.com/mikrotext_api_latest.zip
+unzip mikrotext_app.zip -d mikrotext_app
+unzip mikrotext_api.zip -d mikrotext_api
+```
+
+## Build From Source
+
+```bash
+npm install
+npm run build
+```
+
+The build writes static app files to `dist/` and the Node relay bundle to `lib/mikrotext.mjs`.
+
+## Static App
+
+Serve the app from a stable HTTPS origin. Browser storage and service-worker behavior are scoped to the origin, so moving the app to another domain gives users a separate room/session store.
+
+The static app reads `config.json` for the relay endpoint. For Cloudflare Pages, set:
+
+```bash
+CF_PAGES=1
+```
+
+or explicitly set:
+
+```bash
+MIKROTEXT_PUBLIC_API_BASE_URL=https://text-api.mikrosuite.com
+```
+
+The build writes the API origin to `dist/config.json` and allows it in `_headers`.
+
+The build includes `_headers` for static hosts that support deploy-time security headers.
+
+## MikroSuite Hosted Deployment
+
+The hosted MikroSuite deployment uses a split origin:
+
+- `https://text.mikrosuite.com` serves the static browser app.
+- `https://text-api.mikrosuite.com` serves the relay API.
+
+Build the Cloudflare Pages app with `CF_PAGES=1`, or set `MIKROTEXT_PUBLIC_API_BASE_URL=https://text-api.mikrosuite.com` explicitly. The relay should run with `ALLOWED_DOMAINS=https://text.mikrosuite.com` so only the public app origin can call it from browsers.
+
+The shared app-server provisioning maps `text-api.mikrosuite.com` through Caddy to the MikroText relay on local port `4010`.
+
+## API Relay
+
+Run the API bundle:
+
+```bash
+HOST=127.0.0.1 PORT=3000 node lib/mikrotext.mjs
+```
+
+For production, run the API behind a reverse proxy that provides HTTPS and allows the public app origin through `ALLOWED_DOMAINS`.
+
+## HTTPS
+
+Use HTTPS for production. Browser crypto APIs require a secure context in normal browser deployments, and users should not share room-key fragments over plaintext HTTP.
+
+## Build Integrity
+
+Web-delivered JavaScript is part of the security boundary. If the app host serves malicious client code, that code can read room keys before encryption protects anything.
+
+For higher-assurance deployments, pin static assets, publish checksums, or distribute a signed packaged app. MikroText does not include signed build verification by default.
+
+## Retention
+
+The relay stores state in memory. This supports disposable rooms, but active rooms are lost when the API process restarts.
+
+Use process supervision for availability. Add durable persistence only if it preserves the room expiry and plaintext-free relay model.
+
+## Headers
+
+The app and API use restrictive defaults for:
+
+- content security policy
+- referrer policy
+- content type sniffing
+- frame ancestry
+- browser permissions
+- API response caching

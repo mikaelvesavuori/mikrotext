@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>MikroText</title>
+    <link href="/styles.css" rel="stylesheet">
+
+    <meta name="description" content="MikroText">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:3000 http://localhost:3000; form-action 'none'">
+    <meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b0d10" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MikroText">
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+  </head>
+
+  <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-bars" viewBox="0 0 24 24">
+        <path d="M4 6.75h16M4 12h16M4 17.25h16" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24">
+        <path d="m6 18 12-12M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path fill="currentColor" stroke="none" d="M12 20.5a8.5 8.5 0 0 0 8.5-8.5c0-.7-.1-1.05-.43-1.05-.2 0-.36.12-.56.22a5.8 5.8 0 0 1-2.58.58 4.68 4.68 0 0 1-4.68-4.68c0-.94.2-1.8.58-2.58.1-.2.22-.36.22-.56 0-.33-.35-.43-1.05-.43a8.5 8.5 0 1 0 0 17Z"/>
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <path d="M12 3v1.5m0 15V21m8.485-8.485H21m-18 0H3m15.364-6.364 1.06-1.06M4.576 19.425l1.06-1.06m12.728 0 1.06 1.06M4.576 4.575l1.06 1.06M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <path d="M7.5 10.5V8.25a4.5 4.5 0 0 1 9 0v2.25m-10.25 0h11.5c.69 0 1.25.56 1.25 1.25v7A1.25 1.25 0 0 1 17.75 20H6.25A1.25 1.25 0 0 1 5 18.75v-7c0-.69.56-1.25 1.25-1.25Z" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24">
+        <path d="m13.5 10.5-3 3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="m8.5 15.5-1.4 1.4a3.8 3.8 0 0 1-5.37-5.37l2.1-2.1a3.8 3.8 0 0 1 5.37 0" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="m15.5 8.5 1.4-1.4a3.8 3.8 0 0 1 5.37 5.37l-2.1 2.1a3.8 3.8 0 0 1-5.37 0" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path d="M8 8.5V6.25A2.25 2.25 0 0 1 10.25 4h7.5A2.25 2.25 0 0 1 20 6.25v7.5A2.25 2.25 0 0 1 17.75 16H15.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 10.25A2.25 2.25 0 0 1 6.25 8h7.5A2.25 2.25 0 0 1 16 10.25v7.5A2.25 2.25 0 0 1 13.75 20h-7.5A2.25 2.25 0 0 1 4 17.75v-7.5Z" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-fire" viewBox="0 0 24 24">
+        <path d="M12 21c4.14 0 7.5-3.15 7.5-7.05 0-3.24-1.72-5.98-5.25-8.45.05 2.2-.8 4-2.65 5.3-.95-.92-1.7-2.32-1.95-4.15C6.6 9.05 4.5 11.25 4.5 13.95 4.5 17.85 7.86 21 12 21Z" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24">
+        <path d="m4 12 16-8-4.5 16-3.25-6.25L4 12Z" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="m12.25 13.75 3.25-9.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M16.023 9.348h4.992V4.356M3.75 12a8.25 8.25 0 0 1 14.068-5.818l3.197 3.166M7.977 14.652H2.985v4.992M20.25 12A8.25 8.25 0 0 1 6.182 17.818l-3.197-3.166" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3.75 19.5 6v5.45c0 4.64-3.05 7.8-7.5 8.8-4.45-1-7.5-4.16-7.5-8.8V6L12 3.75Z" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="m8.75 12 2.2 2.2 4.55-5" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+    </svg>
+
+    <noscript>
+      <div class="noscript-message">MikroText needs JavaScript for local encryption.</div>
+    </noscript>
+
+    <div class="app-container">
+      <aside class="sidebar" aria-label="Rooms">
+        <div class="brand-row">
+          <img src="/app-icon.svg" alt="" class="brand-mark">
+          <div>
+            <div class="brand-name">MikroText</div>
+          </div>
+          <button class="icon-button mobile-theme-button" id="mobile-theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+            <svg class="icon icon-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            <svg class="icon icon-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
+          </button>
+          <button class="icon-button mobile-menu-close" id="mobile-menu-close" title="Close" aria-label="Close">
+            <svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+          </button>
+        </div>
+
+        <button class="primary-action" id="create-room-btn">
+          <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>
+          <span>New room</span>
+        </button>
+
+        <div class="rooms-list" id="rooms-list" aria-live="polite"></div>
+
+        <div class="mobile-menu-actions" aria-label="Room actions">
+          <button class="menu-action" id="mobile-copy-invite-btn" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-link"></use></svg>
+            <span>Copy invite</span>
+          </button>
+          <button class="menu-action" id="mobile-safety-code-btn" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
+            <span>Safety code</span>
+          </button>
+          <button class="menu-action danger" id="mobile-burn-room-btn" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#icon-fire"></use></svg>
+            <span>Burn room</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="room-header">
+          <button class="icon-button mobile-menu-toggle" id="mobile-menu-toggle" title="Menu" aria-label="Menu">
+            <svg class="icon" aria-hidden="true"><use href="#icon-bars"></use></svg>
+          </button>
+          <div class="room-heading">
+            <div class="room-title" id="room-title">MikroText</div>
+            <div class="room-subtitle" id="room-subtitle"></div>
+          </div>
+          <div class="room-actions">
+            <button class="icon-button" id="copy-invite-btn" title="Copy invite" aria-label="Copy invite" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#icon-link"></use></svg>
+            </button>
+            <button class="icon-button" id="safety-code-btn" title="Safety code" aria-label="Safety code" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
+            </button>
+            <button class="icon-button danger" id="burn-room-btn" title="Burn room" aria-label="Burn room" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#icon-fire"></use></svg>
+            </button>
+            <button class="icon-button" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+              <svg class="icon icon-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+              <svg class="icon icon-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="empty-state" id="empty-state">
+          <h1>No room</h1>
+          <button class="primary-action empty-create-room" id="empty-create-room-btn">
+            <svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg>
+            <span>New room</span>
+          </button>
+        </section>
+
+        <section class="join-panel" id="join-panel" hidden>
+          <div class="join-box">
+            <div class="join-icon">
+              <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>
+            </div>
+            <h1>Join room</h1>
+            <label for="join-name">Name</label>
+            <div class="join-name-row">
+              <input id="join-name" type="text" autocomplete="off" maxlength="48">
+              <button class="icon-button" id="regenerate-name-btn" title="Regenerate name" aria-label="Regenerate name">
+                <svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>
+              </button>
+            </div>
+            <button class="btn" id="join-room-btn">
+              <svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg>
+              <span>Join</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="chat-panel" id="chat-panel" hidden>
+          <div class="room-meta">
+            <div class="meta-pill" id="expires-status"></div>
+            <div class="meta-pill" id="participant-status"></div>
+          </div>
+
+          <div class="messages" id="messages" aria-live="polite"></div>
+
+          <form class="composer" id="composer-form">
+            <textarea id="message-input" rows="1" maxlength="1000" placeholder="Message" autocomplete="off"></textarea>
+            <button class="send-button" id="send-message-btn" title="Send" aria-label="Send">
+              <svg class="icon" aria-hidden="true"><use href="#icon-send"></use></svg>
+            </button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="/pwa.js"></script>
+    <script src="/mikrotext.min.js"></script>
+  </body>
+</html>
