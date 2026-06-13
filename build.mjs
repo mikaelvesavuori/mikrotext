@@ -76,7 +76,7 @@ for (const fileName of staticFiles) {
 }
 
 const hostedRuntimeApiBaseUrl = writeHostedRuntimeConfig();
-writeHostedHeaders(hostedRuntimeApiBaseUrl);
+writeHostedSecurityPolicy(hostedRuntimeApiBaseUrl);
 
 console.log("MikroText web app written to dist");
 
@@ -106,19 +106,27 @@ function writeHostedRuntimeConfig() {
   return apiBaseUrl;
 }
 
-function writeHostedHeaders(apiBaseUrl) {
+function writeHostedSecurityPolicy(apiBaseUrl) {
   if (!apiBaseUrl) return;
 
   const apiOrigin = new URL(apiBaseUrl).origin;
-  const headers = readFileSync("./dist/_headers", "utf8");
-  if (headers.includes(apiOrigin)) return;
+  addApiOriginToConnectSrc("./dist/_headers", apiOrigin);
+  addApiOriginToConnectSrc("./dist/index.html", apiOrigin);
+}
 
-  writeFileSync(
-    "./dist/_headers",
-    headers.replace(/connect-src ([^;]+);/, (_match, sources) => {
-      return `connect-src ${sources} ${apiOrigin};`;
-    })
-  );
+function addApiOriginToConnectSrc(filePath, apiOrigin) {
+  const contents = readFileSync(filePath, "utf8");
+  if (contents.includes(apiOrigin)) return;
+
+  const updatedContents = contents.replace(/connect-src ([^;]+);/, (_match, sources) => {
+    return `connect-src ${sources} ${apiOrigin};`;
+  });
+
+  if (updatedContents === contents) {
+    throw new Error(`Could not find connect-src directive in ${filePath}`);
+  }
+
+  writeFileSync(filePath, updatedContents);
 }
 
 function getHostedApiBaseUrl() {
